@@ -1,0 +1,21 @@
+namespace WATickets.Models.Cliente
+{
+    using System;
+    using System.Data.Entity;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Linq;
+
+    public partial class ModelCliente : DbContext
+    {
+        public ModelCliente()
+            : base("name=ModelCliente")
+        {
+        }
+
+        public virtual DbSet<ConexionSAP> ConexionSAP { get; set; }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+
+        }
+    }
+}
