@@ -247,6 +247,7 @@
     </Compile>
     <Compile Include="Models\Cliente\ConexionSAP.cs" />
     <Compile Include="Models\Cliente\ModelCliente.cs" />
+    <Compile Include="Models\Datos\Cliente.cs" />
     <Compile Include="Models\Datos\OrdenVenta.cs" />
     <Compile Include="Models\Datos\Proyectos.cs" />
     <Compile Include="Models\Filtros.cs" />
