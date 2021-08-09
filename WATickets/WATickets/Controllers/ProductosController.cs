@@ -27,7 +27,7 @@ namespace WATickets.Controllers
                 SQL += " from oitw t0 ";
                 SQL += " inner join oitm t1 on t0.ItemCode = t1.ItemCode  ";
                 SQL += " inner join itm1 t2 on t0.ItemCode = t2.ItemCode  and t2.PriceList = '2' inner join OITB t3 on t1.ItmsGrpCod = t3.ItmsGrpCod inner join owhs t4 on t0.WhsCode = t4.WhsCode ";
-                SQL += " where t0.OnHand - t0.IsCommited > 0 and t3.ItmsGrpCod in (110,112,147,109,127,113,120,146) ";
+                SQL += " where t0.OnHand - t0.IsCommited > 0 and t3.ItmsGrpCod in (110,112,147,109,127,113,120,146) and t0.WhsCode = '01' ";
         
 
                 SqlConnection Cn = new SqlConnection(g.DevuelveCadena());  
