@@ -31,11 +31,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -236,6 +237,7 @@
     <Compile Include="Controllers\G.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\OFVController.cs" />
     <Compile Include="Controllers\OrdenVentaController.cs" />
     <Compile Include="Controllers\ProductosController.cs" />
     <Compile Include="Controllers\ProyectosController.cs" />
@@ -245,11 +247,16 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Cliente\BitacoraErrores.cs" />
     <Compile Include="Models\Cliente\ConexionSAP.cs" />
     <Compile Include="Models\Cliente\ModelCliente.cs" />
+    <Compile Include="Models\Cliente\Parametros.cs" />
+    <Compile Include="Models\Datos\Articulo.cs" />
     <Compile Include="Models\Datos\Cliente.cs" />
+    <Compile Include="Models\Datos\EncOF.cs" />
     <Compile Include="Models\Datos\OrdenVenta.cs" />
     <Compile Include="Models\Datos\Proyectos.cs" />
+    <Compile Include="Models\Datos\ZohoApi.cs" />
     <Compile Include="Models\Filtros.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
