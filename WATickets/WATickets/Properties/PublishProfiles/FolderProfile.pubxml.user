@@ -427,10 +427,10 @@ edite el archivo MSBuild. Visite https://go.microsoft.com/fwlink/?LinkID=208121 
       <publishTime>09/17/2021 22:30:53</publishTime>
     </File>
     <File Include="bin/WATickets.dll">
-      <publishTime>10/08/2021 22:24:39</publishTime>
+      <publishTime>01/28/2022 09:53:40</publishTime>
     </File>
     <File Include="bin/WATickets.pdb">
-      <publishTime>10/08/2021 22:24:39</publishTime>
+      <publishTime>01/28/2022 09:53:40</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>09/19/2021 13:15:56</publishTime>

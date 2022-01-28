@@ -127,7 +127,7 @@ namespace WATickets.Controllers
 
                 Parametros parametros = db.Parametros.FirstOrDefault();
                 HttpClient cliente = new HttpClient();
-
+                var ProductosZoho =  new ZohoApiProductos();
 
                 cliente.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -166,7 +166,7 @@ namespace WATickets.Controllers
 
                                 Cmd4.Connection = Cn4;
 
-                                Cmd4.CommandText = "UPDATE OQUT set U_IDZOHO = '" + resp2.data.FirstOrDefault().id + "' where DocEntry = '" + DocNum + "'";
+                                Cmd4.CommandText = "UPDATE OQUT set U_IDZOHO = '" + ProyectID.id + "' where DocEntry = '" + DocNum + "'";
 
                                 Cmd4.ExecuteNonQuery();
                                 Cn4.Close();
@@ -213,11 +213,41 @@ namespace WATickets.Controllers
                                 Cn1.Open();
                                 Da1.Fill(Ds1, "Detalle");
                                 encabezado.Detalle = new List<DetOF>();
+                                //Busqueda de productos Zoho
+                                HttpClient cl = new HttpClient();
+
+
+                                cl.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                                try
+                                {
+                                    HttpResponseMessage responseCL = await cl.GetAsync(parametros.UrlProductos);
+                                    if (responseCL.IsSuccessStatusCode)
+                                    {
+                                        var respCL = await responseCL.Content.ReadAsAsync<ZohoApiProductos>();
+
+                                        ProductosZoho =  respCL;
+                                    }
+                                    else
+                                    {
+                                        throw new Exception(response2.ReasonPhrase);
+                                    }
+                                }
+                                catch (Exception exc)
+                                {
+
+                                    throw new Exception(exc.Message);
+                                }
+
+                                //Termina busqueda de productos Zoho
+
                                 foreach (DataRow item2 in Ds1.Tables["Detalle"].Rows)
                                 {
                                     DetOF detalle = new DetOF();
                                     detalle.NumLinea = Convert.ToInt32(item2["Linea"]);
                                     detalle.ItemCode = item2["ItemCode"].ToString();
+
+                                    detalle.ZohoProductId = ProductosZoho.data.Where(a => a.Product_Code == detalle.ItemCode).FirstOrDefault() == null ? "" : ProductosZoho.data.Where(a => a.Product_Code == detalle.ItemCode).FirstOrDefault().id;
                                     detalle.Descripcion = item2["Dscription"].ToString();
                                     detalle.Cantidad = Convert.ToDecimal(item2["Quantity"]);
                                     detalle.PorDesc = Convert.ToDecimal(item2["DiscPrcnt"]);
@@ -248,8 +278,16 @@ namespace WATickets.Controllers
                                     {
                                         response3.Content.Headers.ContentType.MediaType = "application/json";
                                         var res = await response3.Content.ReadAsStringAsync();
+                                        BitacoraZoho bitEncabezado = new BitacoraZoho();
+                                        bitEncabezado.JsonEnviado = JsonConvert.SerializeObject(encabezado);
+                                        bitEncabezado.Fecha = DateTime.Now;
+                                        bitEncabezado.DocNum = DocNum;
+                                        bitEncabezado.RespuestaZoho = res.ToString();
+                                        db.BitacoraZoho.Add(bitEncabezado);
+                                        db.SaveChanges();
 
-                                       
+
+
                                     }
                                 }
                                 catch (Exception)

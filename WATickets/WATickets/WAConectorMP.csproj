@@ -248,6 +248,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Cliente\BitacoraErrores.cs" />
+    <Compile Include="Models\Cliente\BitacoraZoho.cs" />
     <Compile Include="Models\Cliente\ConexionSAP.cs" />
     <Compile Include="Models\Cliente\ModelCliente.cs" />
     <Compile Include="Models\Cliente\Parametros.cs" />
@@ -257,6 +258,7 @@
     <Compile Include="Models\Datos\OrdenVenta.cs" />
     <Compile Include="Models\Datos\Proyectos.cs" />
     <Compile Include="Models\Datos\ZohoApi.cs" />
+    <Compile Include="Models\Datos\ZohoApiProductos.cs" />
     <Compile Include="Models\Filtros.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

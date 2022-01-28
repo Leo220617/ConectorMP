@@ -31,6 +31,7 @@ namespace WATickets.Models.Datos
     {
         public int NumLinea { get; set; }
         public string ItemCode { get; set; }
+        public string ZohoProductId { get; set; }
         public string Descripcion { get; set; }
         public decimal Cantidad { get; set; }
         public decimal PorDesc { get; set; }

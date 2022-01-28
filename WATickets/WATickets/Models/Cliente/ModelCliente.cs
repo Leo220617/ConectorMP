@@ -14,6 +14,8 @@ namespace WATickets.Models.Cliente
 
         public virtual DbSet<ConexionSAP> ConexionSAP { get; set; }
         public virtual DbSet<BitacoraErrores> BitacoraErrores { get; set; }
+        public virtual DbSet<BitacoraZoho> BitacoraZoho { get; set; }
+
         public virtual DbSet<Parametros> Parametros { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

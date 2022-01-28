@@ -17,5 +17,6 @@ namespace WATickets.Models.Cliente
         public string QGOFV1 { get; set; }
         public string QGOFV2 { get; set; }
         public string UrlPutZoho { get; set; }
+        public string UrlProductos { get; set; }
     }
 }
