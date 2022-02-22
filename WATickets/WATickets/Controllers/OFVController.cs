@@ -131,28 +131,37 @@ namespace WATickets.Controllers
 
                 cliente.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
+                var SQL = parametros.QOFV + "'" + DocNum + "'";
+                var conexion = g.DevuelveCadena();
+                SqlConnection Cn = new SqlConnection(conexion);
+                SqlCommand Cmd = new SqlCommand(SQL, Cn);
+                SqlDataAdapter Da = new SqlDataAdapter(Cmd);
+                DataSet Ds = new DataSet();
+                Cn.Open();
+                Da.Fill(Ds, "Encabezado");
+
+                var Categoria = Ds.Tables["Encabezado"].Rows[0]["Categoria"].ToString();
+                var Proyecto = Ds.Tables["Encabezado"].Rows[0]["Proyecto"].ToString();
+                var Concatenacion = Proyecto + " - " + Categoria;
+
+
+                var DealName = Concatenacion;
+                 
+
+                
+
+
                 try
                 {
-                    HttpResponseMessage response2 = await cliente.GetAsync(parametros.UrlZoho);
+                    HttpResponseMessage response2 = await cliente.GetAsync(parametros.UrlZoho + "/" + Concatenacion);
                     if (response2.IsSuccessStatusCode)
                     {
                         response2.Content.Headers.ContentType.MediaType = "application/json";
                         var resp2 = await response2.Content.ReadAsAsync<ZohoApi>();
 
-                        var SQL = parametros.QOFV + "'" + DocNum + "'";
-                        var conexion = g.DevuelveCadena();
-                        SqlConnection Cn = new SqlConnection(conexion);
-                        SqlCommand Cmd = new SqlCommand(SQL, Cn);
-                        SqlDataAdapter Da = new SqlDataAdapter(Cmd);
-                        DataSet Ds = new DataSet();
-                        Cn.Open();
-                        Da.Fill(Ds, "Encabezado");
+                       
 
-                        var Categoria = Ds.Tables["Encabezado"].Rows[0]["Categoria"].ToString();
-                        var Proyecto = Ds.Tables["Encabezado"].Rows[0]["Proyecto"].ToString();
-
-                        var Concatenacion = Proyecto + " - " + Categoria;
-                        var ProyectID = resp2.data.Where(a => a.Deal_Name.ToLower().Contains(Concatenacion.ToLower())).FirstOrDefault();
+                        var ProyectID = resp2.data.Where(a => a.Deal_Name.ToLower().Contains(Concatenacion.ToLower()) && !a.Stage.ToLower().Contains("Aprobada".ToLower()) &&  !a.Stage.ToLower().Contains("Cerrado".ToLower())).FirstOrDefault();
 
                         if (ProyectID != null)
                         {
@@ -195,7 +204,7 @@ namespace WATickets.Controllers
                                 encabezado.DocDate = Convert.ToDateTime(Ds2.Tables["Encabezado2"].Rows[0]["DocDate"]);
                                 encabezado.DocDueDate = Convert.ToDateTime(Ds2.Tables["Encabezado2"].Rows[0]["DocDueDate"]);
                                 encabezado.DocCur = Ds2.Tables["Encabezado2"].Rows[0]["DocCur"].ToString();
-                                encabezado.Impuestos = Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["VatSum"]);
+                                encabezado.Impuestos = Math.Round( Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["VatSum"]),2);
                                 encabezado.ImpuestosFC = Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["VatSumFC"]);
                                 encabezado.Descuento = Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["DiscSum"]);
                                 encabezado.DescuentoFC = Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["DiscSumFC"]);
@@ -203,6 +212,7 @@ namespace WATickets.Controllers
                                 encabezado.DocTotalFC = Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["DocTotalFC"]);
                                 encabezado.TipoCambio = Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["DocRate"]);
                                 encabezado.IdZoho = Ds2.Tables["Encabezado2"].Rows[0]["IdZoho"].ToString();
+                                encabezado.CategoriaCierre = Ds2.Tables["Encabezado2"].Rows[0]["CategoriaCierre"].ToString();
 
                                 var SQL1 = parametros.QGOFV1 + "'" + encabezado.DocEntry + "'";
 
@@ -214,30 +224,30 @@ namespace WATickets.Controllers
                                 Da1.Fill(Ds1, "Detalle");
                                 encabezado.Detalle = new List<DetOF>();
                                 //Busqueda de productos Zoho
-                                HttpClient cl = new HttpClient();
+                                //HttpClient cl = new HttpClient();
 
 
-                                cl.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                                //cl.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                                try
-                                {
-                                    HttpResponseMessage responseCL = await cl.GetAsync(parametros.UrlProductos);
-                                    if (responseCL.IsSuccessStatusCode)
-                                    {
-                                        var respCL = await responseCL.Content.ReadAsAsync<ZohoApiProductos>();
+                                //try
+                                //{
+                                //    HttpResponseMessage responseCL = await cl.GetAsync(parametros.UrlProductos);
+                                //    if (responseCL.IsSuccessStatusCode)
+                                //    {
+                                //        var respCL = await responseCL.Content.ReadAsAsync<ZohoApiProductos>();
 
-                                        ProductosZoho =  respCL;
-                                    }
-                                    else
-                                    {
-                                        throw new Exception(response2.ReasonPhrase);
-                                    }
-                                }
-                                catch (Exception exc)
-                                {
+                                //        ProductosZoho =  respCL;
+                                //    }
+                                //    else
+                                //    {
+                                //        throw new Exception(response2.ReasonPhrase);
+                                //    }
+                                //}
+                                //catch (Exception exc)
+                                //{
 
-                                    throw new Exception(exc.Message);
-                                }
+                                //    throw new Exception(exc.Message);
+                                //}
 
                                 //Termina busqueda de productos Zoho
 
@@ -247,7 +257,10 @@ namespace WATickets.Controllers
                                     detalle.NumLinea = Convert.ToInt32(item2["Linea"]);
                                     detalle.ItemCode = item2["ItemCode"].ToString();
 
-                                    detalle.ZohoProductId = ProductosZoho.data.Where(a => a.Product_Code == detalle.ItemCode).FirstOrDefault() == null ? "" : ProductosZoho.data.Where(a => a.Product_Code == detalle.ItemCode).FirstOrDefault().id;
+                                    detalle.ZohoProductId = item2["U_IDZOHO"].ToString(); //ProductosZoho.data.Where(a => a.Product_Code == detalle.ItemCode).FirstOrDefault() == null ? "" : ProductosZoho.data.Where(a => a.Product_Code == detalle.ItemCode).FirstOrDefault().id;
+
+                                 
+
                                     detalle.Descripcion = item2["Dscription"].ToString();
                                     detalle.Cantidad = Convert.ToDecimal(item2["Quantity"]);
                                     detalle.PorDesc = Convert.ToDecimal(item2["DiscPrcnt"]);
@@ -258,6 +271,75 @@ namespace WATickets.Controllers
                                     detalle.Impuestos = Convert.ToDecimal(item2["Impuestos"]);
                                     detalle.TotalDescuentos = Convert.ToDecimal(item2["TotalDescuento"]);
                                     detalle.TotalLinea = Convert.ToDecimal(item2["Total"]);
+
+                                    if (string.IsNullOrEmpty(detalle.ZohoProductId))
+                                    {
+                                        ProductZoho item = new ProductZoho();
+                                        item.IdProducto = detalle.ItemCode;
+                                        item.Descripcion = detalle.Descripcion;
+                                        item.Categoria = Categoria;
+
+                                        HttpClient clienteProd = new HttpClient();
+
+                                        var httpContent2Prod = new StringContent(JsonConvert.SerializeObject(item), Encoding.UTF8, "application/json");
+                                        clienteProd.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                                        try
+                                        {
+                                            HttpResponseMessage response3 = await clienteProd.PostAsync(parametros.UrlPostProductos, httpContent2Prod);
+                                            if (response3.IsSuccessStatusCode)
+                                            {
+                                                response3.Content.Headers.ContentType.MediaType = "application/json";
+                                                var res = await response3.Content.ReadAsStringAsync();
+                                                BitacoraZoho bitEncabezado = new BitacoraZoho();
+                                                bitEncabezado.JsonEnviado = JsonConvert.SerializeObject(item);
+                                                bitEncabezado.Fecha = DateTime.Now;
+                                                bitEncabezado.DocNum = DocNum;
+                                                bitEncabezado.RespuestaZoho = res.ToString();
+                                                db.BitacoraZoho.Add(bitEncabezado);
+                                                db.SaveChanges();
+
+                                                detalle.ZohoProductId = bitEncabezado.RespuestaZoho;
+
+
+                                                //Actualizacion en sap 
+
+                                                var Cn5 = new SqlConnection(conexion);
+                                                var Cmd5 = new SqlCommand();
+
+                                                Cn5.Open();
+
+                                                Cmd5.Connection = Cn5;
+                                                var SQLQ = parametros.QGOV.Replace("@reemplazo", "'"+detalle.ZohoProductId+"'");
+                                                SQLQ = SQLQ.Replace("@re2", "'"+detalle.ItemCode+"'");
+                                                Cmd5.CommandText = SQLQ;
+
+                                                Cmd5.ExecuteNonQuery();
+                                                Cn5.Close();
+                                                Cn5.Dispose();
+
+
+
+                                            }
+                                        }
+                                        catch (Exception exZ)
+                                        {
+
+                                            BitacoraErrores be = new BitacoraErrores();
+                                            be.DocNum = DocNum;
+                                            be.Razon = exZ.Message;
+                                            be.StackTrace = exZ.StackTrace;
+                                            be.Fecha = DateTime.Now;
+
+                                            db.BitacoraErrores.Add(be);
+                                            db.SaveChanges();
+
+                                        }
+                                    }
+
+
+                                    // encabezado.Impuestos += detalle.Impuestos;
+
                                     encabezado.Detalle.Add(detalle);
                                 }
 
@@ -290,10 +372,18 @@ namespace WATickets.Controllers
 
                                     }
                                 }
-                                catch (Exception)
+                                catch (Exception exZ)
                                 {
 
-                                     
+                                    BitacoraErrores be = new BitacoraErrores();
+                                    be.DocNum = DocNum;
+                                    be.Razon = exZ.Message;
+                                    be.StackTrace = exZ.StackTrace;
+                                    be.Fecha = DateTime.Now;
+
+                                    db.BitacoraErrores.Add(be);
+                                    db.SaveChanges();
+
                                 }
                                 //Insercion en Zoho
                             }

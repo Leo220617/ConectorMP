@@ -15,5 +15,6 @@ namespace WATickets.Models.Datos
     {
         public string id { get; set; }
         public string Deal_Name { get; set; }
+        public string Stage { get; set; }
     }
 }

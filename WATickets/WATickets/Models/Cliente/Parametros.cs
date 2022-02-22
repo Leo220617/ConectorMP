@@ -18,5 +18,13 @@ namespace WATickets.Models.Cliente
         public string QGOFV2 { get; set; }
         public string UrlPutZoho { get; set; }
         public string UrlProductos { get; set; }
+        public string QOV { get; set; }
+        public string QGOV { get; set; }
+        public string QGOV1 { get; set; }
+        public string QGOV2 { get; set; }
+        public string UrlOVZoho { get; set; }
+        public string SQLProductos { get; set; }
+        public string UrlPostProductos { get; set; }
+        public string SQLProducto { get; set; }
     }
 }

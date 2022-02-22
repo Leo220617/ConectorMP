@@ -25,6 +25,7 @@ namespace WATickets.Models.Datos
         public decimal DocTotalFC { get; set; }
         public decimal TipoCambio { get; set; }
         public string IdZoho { get; set; }
+        public string CategoriaCierre { get; set; }
         public List<DetOF> Detalle { get; set; }
     }
     public class DetOF

@@ -256,6 +256,7 @@
     <Compile Include="Models\Datos\Cliente.cs" />
     <Compile Include="Models\Datos\EncOF.cs" />
     <Compile Include="Models\Datos\OrdenVenta.cs" />
+    <Compile Include="Models\Datos\ProductZoho.cs" />
     <Compile Include="Models\Datos\Proyectos.cs" />
     <Compile Include="Models\Datos\ZohoApi.cs" />
     <Compile Include="Models\Datos\ZohoApiProductos.cs" />
