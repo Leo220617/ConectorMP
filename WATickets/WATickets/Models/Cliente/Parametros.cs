@@ -26,5 +26,7 @@ namespace WATickets.Models.Cliente
         public string SQLProductos { get; set; }
         public string UrlPostProductos { get; set; }
         public string SQLProducto { get; set; }
+        public string SQLPagos { get; set; }
+        public string UrlPutPagos { get; set; }
     }
 }

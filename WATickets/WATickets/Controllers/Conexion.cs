@@ -54,6 +54,7 @@ namespace WATickets.Controllers
                     CompanyDB = Datos.SQLBD,
                     UserName = Datos.SAPUser,
                     Password = Datos.SAPPass
+                    
                 };
 
                 var resp = _company.Connect();
