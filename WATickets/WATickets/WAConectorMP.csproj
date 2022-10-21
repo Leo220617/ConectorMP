@@ -237,6 +237,7 @@
     <Compile Include="Controllers\G.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\OfertasController.cs" />
     <Compile Include="Controllers\OFVController.cs" />
     <Compile Include="Controllers\OrdenVentaController.cs" />
     <Compile Include="Controllers\PagosController.cs" />
@@ -256,6 +257,8 @@
     <Compile Include="Models\Datos\Articulo.cs" />
     <Compile Include="Models\Datos\Cliente.cs" />
     <Compile Include="Models\Datos\EncOF.cs" />
+    <Compile Include="Models\Datos\OfertaCompra.cs" />
+    <Compile Include="Models\Datos\OrdenCompra.cs" />
     <Compile Include="Models\Datos\OrdenVenta.cs" />
     <Compile Include="Models\Datos\Pagos.cs" />
     <Compile Include="Models\Datos\ProductZoho.cs" />
