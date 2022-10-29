@@ -7,15 +7,17 @@ namespace WATickets.Models.Datos
 {
     public class OrdenCompra
     {
-        public string IdZoho { get; set; }
+       
         public string DocEntry { get; set; }
         public DateTime Fecha { get; set; }
-        public OfertaCompra1 OfertaCompra { get; set; }
+        public bool Completo { get; set; }
+        public string Comentarios { get; set; }
+        public List<OrdenesVentas> OrdenesVentas { get; set; }
     }
     
 }
-public class OfertaCompra1
+public class OrdenesVentas
 {
-    public string DocEntry { get; set; }
+    public string IdZoho { get; set; }
 
 }

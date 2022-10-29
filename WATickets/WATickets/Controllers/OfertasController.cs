@@ -214,47 +214,62 @@ namespace WATickets.Controllers
                 Cn.Open();
                 Da.Fill(Ds, "Encabezado");
                 var Oportunidad = "";
-                try
-                {
-                    HttpResponseMessage response2 = await cliente.GetAsync(parametros.UrlZoho + "/" + Ds.Tables["Encabezado"].Rows[0]["Concatenacion"].ToString());
-                    if (response2.IsSuccessStatusCode)
-                    {
-                        response2.Content.Headers.ContentType.MediaType = "application/json";
-                        var resp2 = await response2.Content.ReadAsAsync<ZohoApi>();
 
-                        var ProyectID = resp2.data.Where(a => a.Deal_Name.ToLower().Contains(Ds.Tables["Encabezado"].Rows[0]["Concatenacion"].ToString().ToLower()) && !a.Stage.ToLower().Contains("Aprobada".ToLower()) && !a.Stage.ToLower().Contains("Cerrado".ToLower())).FirstOrDefault();
-                        if (ProyectID != null)
+
+                OrdenCompra orden = new OrdenCompra();
+
+                orden.OrdenesVentas = new List<OrdenesVentas>();
+
+                foreach (DataRow item in Ds.Tables["Encabezado"].Rows)
+                {
+                    try
+                    {
+                        HttpResponseMessage response2 = await cliente.GetAsync(parametros.UrlZoho + "/" + item["Concatenacion"].ToString());
+                        if (response2.IsSuccessStatusCode)
                         {
-                            Oportunidad = ProyectID.id.ToString();
+                            response2.Content.Headers.ContentType.MediaType = "application/json";
+                            var resp2 = await response2.Content.ReadAsAsync<ZohoApi>();
+
+                            var ProyectID = resp2.data.Where(a => a.Deal_Name.ToLower().Contains(item["Concatenacion"].ToString().ToLower()) && !a.Stage.ToLower().Contains("Aprobada".ToLower()) && !a.Stage.ToLower().Contains("Cerrado".ToLower())).FirstOrDefault();
+                            if (ProyectID != null)
+                            {
+                                Oportunidad = ProyectID.id.ToString();
+                            }
+                            else
+                            {
+                                throw new Exception("No se encontro el proyecto");
+
+                            }
                         }
                         else
                         {
-                            throw new Exception("No se encontro el proyecto");
-
+                            throw new Exception(response2.ReasonPhrase);
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        throw new Exception(response2.ReasonPhrase);
+
+                        throw new Exception(ex.Message);
                     }
-                }
-                catch (Exception ex)
-                {
 
-                    throw new Exception(ex.Message);
+                    orden.DocEntry = item["DocEntry"].ToString();
+                    orden.Fecha = Convert.ToDateTime(item["Fecha"].ToString());
+                    orden.Comentarios = item["Comentarios"].ToString();
+                    orden.Completo = item["Completo"].ToString() == "0" ? false : true;
+                    var OrdenID = new OrdenesVentas();
+                    OrdenID.IdZoho = Oportunidad;
+                    orden.OrdenesVentas.Add(OrdenID);
                 }
 
-                OrdenCompra oferta = new OrdenCompra();
-                oferta.IdZoho = Oportunidad;
-                oferta.DocEntry = Ds.Tables["Encabezado"].Rows[0]["DocEntry"].ToString();
-                oferta.Fecha = Convert.ToDateTime(Ds.Tables["Encabezado"].Rows[0]["Fecha"].ToString());
-                oferta.OfertaCompra = new OfertaCompra1();
-                oferta.OfertaCompra.DocEntry = Ds.Tables["Encabezado"].Rows[0]["DocEntryOferta"].ToString();
+
+               
+
+              
 
 
                 HttpClient clienteProd = new HttpClient();
 
-                var httpContent2Prod = new StringContent(JsonConvert.SerializeObject(oferta), Encoding.UTF8, "application/json");
+                var httpContent2Prod = new StringContent(JsonConvert.SerializeObject(orden), Encoding.UTF8, "application/json");
                 clienteProd.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 try
                 {
@@ -264,7 +279,7 @@ namespace WATickets.Controllers
                         response3.Content.Headers.ContentType.MediaType = "application/json";
                         var res = await response3.Content.ReadAsStringAsync();
                         BitacoraZoho bitEncabezado = new BitacoraZoho();
-                        bitEncabezado.JsonEnviado = JsonConvert.SerializeObject(oferta);
+                        bitEncabezado.JsonEnviado = JsonConvert.SerializeObject(orden);
                         bitEncabezado.Fecha = DateTime.Now;
                         bitEncabezado.DocNum = DocNum;
                         bitEncabezado.RespuestaZoho = res.ToString();
