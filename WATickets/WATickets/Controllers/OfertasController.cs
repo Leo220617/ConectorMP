@@ -361,5 +361,184 @@ namespace WATickets.Controllers
 
         }
 
+
+        [Route("api/Importacion/Modify")]
+        public async Task<HttpResponseMessage> GetModifyImportacion([FromUri] string DocNum = "")
+        {
+
+
+            try
+            {
+
+                Parametros parametros = db.Parametros.FirstOrDefault();
+                HttpClient cliente = new HttpClient();
+
+
+                cliente.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var SQL = parametros.SQLFacturaImportacion + "'" + DocNum + "'";
+                var conexion = g.DevuelveCadena();
+                SqlConnection Cn = new SqlConnection(conexion);
+                SqlCommand Cmd = new SqlCommand(SQL, Cn);
+                SqlDataAdapter Da = new SqlDataAdapter(Cmd);
+                DataSet Ds = new DataSet();
+                Cn.Open();
+                Da.Fill(Ds, "Encabezado");
+                var Oportunidad = "";
+
+
+                FacturaImportacion FI = new FacturaImportacion();
+
+                FI.OrdenesVentas = new List<OrdenesVentasI>();
+
+                foreach (DataRow item in Ds.Tables["Encabezado"].Rows)
+                {
+                    try
+                    {
+                        HttpResponseMessage response2 = await cliente.GetAsync(parametros.UrlZoho + "/" + item["Concatenacion"].ToString());
+                        if (response2.IsSuccessStatusCode)
+                        {
+                            response2.Content.Headers.ContentType.MediaType = "application/json";
+                            var resp2 = await response2.Content.ReadAsAsync<ZohoApi>();
+
+                            var ProyectID = resp2.data.Where(a => a.Deal_Name.ToLower().Contains(item["Concatenacion"].ToString().ToLower()) && !a.Stage.ToLower().Contains("Aprobada".ToLower()) && !a.Stage.ToLower().Contains("Cerrado".ToLower())).FirstOrDefault();
+                            if (ProyectID != null)
+                            {
+                                Oportunidad = ProyectID.id.ToString();
+                            }
+                            else
+                            {
+                                throw new Exception("No se encontro el proyecto");
+
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception(response2.ReasonPhrase);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        throw new Exception(ex.Message);
+                    }
+
+                    FI.DocEntry = item["DocEntry"].ToString();
+                    FI.Fecha = Convert.ToDateTime(item["Fecha"].ToString());
+                    FI.Naviera = item["Naviera"].ToString();
+                    FI.DiasTransito  = Convert.ToInt32(item["DiasTransito"].ToString());
+
+                    FI.FechaSalidaEsperada = Convert.ToDateTime(item["FechaSalidaEsperada"].ToString());
+                    FI.FechaArriboEsperada = Convert.ToDateTime(item["FechaArriboEsperada"].ToString());
+                    FI.FechaSalidaReal = Convert.ToDateTime(item["FechaSalidaReal"].ToString());
+                    FI.FechaArriboReal = Convert.ToDateTime(item["FechaArriboReal"].ToString());
+
+
+                    var OrdenID = new OrdenesVentasI();
+                    OrdenID.IdZoho = Oportunidad;
+                    FI.OrdenesVentas.Add(OrdenID);
+                }
+
+
+
+
+
+
+
+                HttpClient clienteProd = new HttpClient();
+
+                var httpContent2Prod = new StringContent(JsonConvert.SerializeObject(FI), Encoding.UTF8, "application/json");
+                clienteProd.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                try
+                {
+                    HttpResponseMessage response3 = await clienteProd.PutAsync(parametros.UrlPutFacturaImportacion, httpContent2Prod);
+                    if (response3.IsSuccessStatusCode)
+                    {
+                        response3.Content.Headers.ContentType.MediaType = "application/json";
+                        var res = await response3.Content.ReadAsStringAsync();
+                        BitacoraZoho bitEncabezado = new BitacoraZoho();
+                        bitEncabezado.JsonEnviado = JsonConvert.SerializeObject(FI);
+                        bitEncabezado.Fecha = DateTime.Now;
+                        bitEncabezado.DocNum = DocNum;
+                        bitEncabezado.RespuestaZoho = res.ToString();
+                        db.BitacoraZoho.Add(bitEncabezado);
+                        db.SaveChanges();
+
+                        try
+                        {
+                            var respZoho = await response3.Content.ReadAsAsync<ZohoApi>();
+
+                            var Cn5 = new SqlConnection(conexion);
+                            var Cmd5 = new SqlCommand();
+
+                            Cn5.Open();
+
+                            Cmd5.Connection = Cn5;
+
+                            Cmd5.CommandText = "UPDATE OPCH set U_IDZOHO = '" + respZoho.data.FirstOrDefault().details.id + "' where DocEntry = '" + DocNum + "'";
+
+                            Cmd5.ExecuteNonQuery();
+                            Cn5.Close();
+                            Cn5.Dispose();
+
+                        }
+                        catch (Exception ex3)
+                        {
+
+                            BitacoraErrores be = new BitacoraErrores();
+                            be.DocNum = DocNum;
+                            be.Razon = ex3.Message;
+                            be.StackTrace = ex3.StackTrace;
+                            be.Fecha = DateTime.Now;
+
+                            db.BitacoraErrores.Add(be);
+                            db.SaveChanges();
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    BitacoraErrores be = new BitacoraErrores();
+                    be.DocNum = DocNum;
+                    be.Razon = ex.Message;
+                    be.StackTrace = ex.StackTrace;
+                    be.Fecha = DateTime.Now;
+
+                    db.BitacoraErrores.Add(be);
+                    db.SaveChanges();
+                }
+
+                Cn.Close();
+
+
+
+
+
+
+                return Request.CreateResponse(HttpStatusCode.OK);
+
+            }
+            catch (Exception ex)
+            {
+                BitacoraErrores be = new BitacoraErrores();
+                be.DocNum = DocNum;
+                be.Razon = ex.Message;
+                be.StackTrace = ex.StackTrace;
+                be.Fecha = DateTime.Now;
+
+                db.BitacoraErrores.Add(be);
+                db.SaveChanges();
+
+
+
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.ToString());
+            }
+
+
+        }
+
+
     }
 }
