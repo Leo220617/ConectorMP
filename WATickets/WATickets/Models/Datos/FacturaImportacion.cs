@@ -15,11 +15,12 @@ namespace WATickets.Models.Datos
         public DateTime FechaArriboEsperada { get; set; }
         public DateTime FechaSalidaReal { get; set; }
         public DateTime FechaArriboReal { get; set; }
-        public List<OrdenesVentasI> OrdenesVentas { get; set; }
+        public List<Oportunidades_Zoho> Oportunidades_Zoho { get; set; }
     }
 
-    public class OrdenesVentasI
+    public class Oportunidades_Zoho
     {
         public string IdZoho { get; set; }
+        public bool Completo { get; set; }
     }
 }

@@ -12,12 +12,9 @@ namespace WATickets.Models.Datos
         public DateTime Fecha { get; set; }
         public bool Completo { get; set; }
         public string Comentarios { get; set; }
-        public List<OrdenesVentas> OrdenesVentas { get; set; }
+        public string IdZoho { get; set; }
+        
     }
     
 }
-public class OrdenesVentas
-{
-    public string IdZoho { get; set; }
-
-}
+ 

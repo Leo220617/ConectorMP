@@ -34,5 +34,9 @@ namespace WATickets.Models.Cliente
         public string UrlPutOrdenCompra { get; set; }
         public string SQLFacturaImportacion { get; set; }
         public string UrlPutFacturaImportacion { get; set; }
+        public string SQLEntradaBodega { get; set; }
+        public string UrlPutEntradaBodega { get; set; }
+        public string SQLEntregaBodega { get; set; }
+        public string UrlPutEntregaBodega { get; set; }
     }
 }

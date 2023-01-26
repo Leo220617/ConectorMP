@@ -257,6 +257,8 @@
     <Compile Include="Models\Datos\Articulo.cs" />
     <Compile Include="Models\Datos\Cliente.cs" />
     <Compile Include="Models\Datos\EncOF.cs" />
+    <Compile Include="Models\Datos\EntradaMercancias.cs" />
+    <Compile Include="Models\Datos\EntregaBodega.cs" />
     <Compile Include="Models\Datos\FacturaImportacion.cs" />
     <Compile Include="Models\Datos\OfertaCompra.cs" />
     <Compile Include="Models\Datos\OrdenCompra.cs" />

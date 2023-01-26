@@ -357,6 +357,28 @@ namespace WATickets.Controllers
                                 encabezado.IdZoho = Ds2.Tables["Encabezado2"].Rows[0]["IdZoho"].ToString();
                                 encabezado.CategoriaCierre = Ds2.Tables["Encabezado2"].Rows[0]["CategoriaCierre"].ToString();
 
+                                try
+                                {
+                                    encabezado.FechaPrimerPago = Convert.ToDateTime(Ds2.Tables["Encabezado2"].Rows[0]["FechaPrimerPago"]);
+                                    encabezado.PorPrimerPago = Convert.ToInt32(Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["PPP"].ToString()));
+                                    encabezado.FechaSegundoPago = Convert.ToDateTime(Ds2.Tables["Encabezado2"].Rows[0]["FechaSegundoPago"]);
+                                    encabezado.PorSegundoPago = Convert.ToInt32( Convert.ToDecimal( Ds2.Tables["Encabezado2"].Rows[0]["PSP"].ToString()));
+                                    encabezado.FechaTercerPago = Convert.ToDateTime(Ds2.Tables["Encabezado2"].Rows[0]["FechaTercerPago"]);
+                                    encabezado.PorTercerPago = Convert.ToInt32( Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["PTP"].ToString()));
+                                    encabezado.FechaCuartoPago = Convert.ToDateTime(Ds2.Tables["Encabezado2"].Rows[0]["FechaCuartoPago"]);
+                                    encabezado.PorCuartoPago = Convert.ToInt32(Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["PCP"].ToString()));
+                                }
+                                catch (Exception ex)
+                                {
+
+                                     
+                                }
+
+                                
+
+
+
+
                                 var SQL1 = parametros.QGOV1 + "'" + encabezado.DocEntry + "'";
 
                                 SqlConnection Cn1 = new SqlConnection(conexion);
@@ -520,7 +542,7 @@ namespace WATickets.Controllers
 
                                             Cmd5.Connection = Cn5;
 
-                                            Cmd5.CommandText = "UPDATE ORDR set U_IDZOHO = '" + respZoho.data.FirstOrDefault().details.id + "' where DocEntry = '" + DocNum + "'";
+                                            Cmd5.CommandText = "UPDATE ORDR set U_IDZOHO = '" + ProyectID.id + "', U_IdZohoDoc = '" + respZoho.data.FirstOrDefault().details.id + "' where DocEntry = '" + DocNum + "'";
 
                                             Cmd5.ExecuteNonQuery();
                                             Cn5.Close();

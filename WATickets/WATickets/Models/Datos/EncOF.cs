@@ -26,6 +26,15 @@ namespace WATickets.Models.Datos
         public decimal TipoCambio { get; set; }
         public string IdZoho { get; set; }
         public string CategoriaCierre { get; set; }
+        public DateTime FechaPrimerPago { get; set; }
+        public int PorPrimerPago { get; set; }
+        public DateTime FechaSegundoPago { get; set; }
+        public int PorSegundoPago { get; set; }
+        public DateTime FechaTercerPago { get; set; }
+        public int PorTercerPago { get; set; }
+        public DateTime FechaCuartoPago { get; set; }
+        public int PorCuartoPago { get; set; }
+
         public List<DetOF> Detalle { get; set; }
     }
     public class DetOF
