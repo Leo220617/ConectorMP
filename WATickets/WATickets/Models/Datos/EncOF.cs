@@ -34,7 +34,8 @@ namespace WATickets.Models.Datos
         public int PorTercerPago { get; set; }
         public DateTime FechaCuartoPago { get; set; }
         public int PorCuartoPago { get; set; }
-
+        public decimal TotalFacturado { get; set; }
+        public DateTime FechaCierre { get; set; }
         public List<DetOF> Detalle { get; set; }
     }
     public class DetOF

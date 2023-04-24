@@ -205,11 +205,11 @@ namespace WATickets.Controllers
                                 encabezado.DocDueDate = Convert.ToDateTime(Ds2.Tables["Encabezado2"].Rows[0]["DocDueDate"]);
                                 encabezado.DocCur = Ds2.Tables["Encabezado2"].Rows[0]["DocCur"].ToString();
                                 encabezado.Impuestos = Math.Round( Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["VatSum"]),2);
-                                encabezado.ImpuestosFC = Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["VatSumFC"]);
-                                encabezado.Descuento = Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["DiscSum"]);
-                                encabezado.DescuentoFC = Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["DiscSumFC"]);
-                                encabezado.DocTotal = Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["DocTotal"]);
-                                encabezado.DocTotalFC = Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["DocTotalFC"]);
+                                encabezado.ImpuestosFC = G.Redondeo( Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["VatSumFC"]));
+                                encabezado.Descuento = G.Redondeo(Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["DiscSum"]));
+                                encabezado.DescuentoFC = G.Redondeo( Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["DiscSumFC"]));
+                                encabezado.DocTotal = G.Redondeo( Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["DocTotal"]));
+                                encabezado.DocTotalFC = G.Redondeo( Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["DocTotalFC"]));
                                 encabezado.TipoCambio = Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["DocRate"]);
                                 encabezado.IdZoho = Ds2.Tables["Encabezado2"].Rows[0]["IdZoho"].ToString();
                                 encabezado.CategoriaCierre = Ds2.Tables["Encabezado2"].Rows[0]["CategoriaCierre"].ToString();
@@ -266,11 +266,11 @@ namespace WATickets.Controllers
                                     detalle.PorDesc = Convert.ToDecimal(item2["DiscPrcnt"]);
                                     detalle.Moneda = item2["Currency"].ToString();
                                     detalle.TipoCambio = Convert.ToDecimal(item2["Rate"]);
-                                    detalle.PrecioUnitario = Convert.ToDecimal(item2["Price"]);
-                                    detalle.SubTotal = Convert.ToDecimal(item2["SubTotal"]);
-                                    detalle.Impuestos = Convert.ToDecimal(item2["Impuestos"]);
-                                    detalle.TotalDescuentos = Convert.ToDecimal(item2["TotalDescuento"]);
-                                    detalle.TotalLinea = Convert.ToDecimal(item2["Total"]);
+                                    detalle.PrecioUnitario = G.Redondeo( Convert.ToDecimal(item2["Price"]));
+                                    detalle.SubTotal = G.Redondeo( Convert.ToDecimal(item2["SubTotal"]));
+                                    detalle.Impuestos = G.Redondeo(Convert.ToDecimal(item2["Impuestos"]));
+                                    detalle.TotalDescuentos = G.Redondeo(Convert.ToDecimal(item2["TotalDescuento"]));
+                                    detalle.TotalLinea = G.Redondeo(Convert.ToDecimal(item2["Total"]));
 
                                     if (string.IsNullOrEmpty(detalle.ZohoProductId))
                                     {

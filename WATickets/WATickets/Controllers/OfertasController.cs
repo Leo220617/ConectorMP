@@ -921,6 +921,136 @@ namespace WATickets.Controllers
 
         }
 
+        [Route("api/NCInvoice/Modify")]
+        public async Task<HttpResponseMessage> GetNCInvoice([FromUri] string DocNum = "", int factura = 0)
+        {
+
+
+            try
+            {
+
+                Parametros parametros = db.Parametros.FirstOrDefault();
+                HttpClient cliente = new HttpClient();
+
+
+                cliente.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var SQL = "";
+                if(factura == 0)
+                {
+                      SQL = parametros.SQLNC + "'" + DocNum + "'";
+
+                }
+                else
+                {
+                      SQL = parametros.SQLInvoice + "'" + DocNum + "'";
+
+                }
+                var conexion = g.DevuelveCadena();
+                SqlConnection Cn = new SqlConnection(conexion);
+                SqlCommand Cmd = new SqlCommand(SQL, Cn);
+                SqlDataAdapter Da = new SqlDataAdapter(Cmd);
+                DataSet Ds = new DataSet();
+                Cn.Open();
+                Da.Fill(Ds, "Encabezado");
+             
+
+
+                NCInvoice NCFac = new NCInvoice();
+
+                if(Ds.Tables["Encabezado"].Rows.Count > 0)
+                {
+                    foreach (DataRow item in Ds.Tables["Encabezado"].Rows)
+                    {
+                         
+
+                        NCFac.DocNum = item["DocNum"].ToString();
+                        NCFac.Fecha = Convert.ToDateTime(item["Fecha"].ToString());
+                        NCFac.Fecha = NCFac.Fecha.AddHours(DateTime.Now.Hour);
+                        NCFac.Fecha = NCFac.Fecha.AddMinutes(DateTime.Now.Minute);
+                        NCFac.IdZohoOdV = item["IdZohoOdV"].ToString();
+
+                        NCFac.Comments = item["Comments"].ToString();
+                        NCFac.NC = G.Redondeo(Convert.ToDecimal(item["NC"]));
+                        NCFac.Invoice = G.Redondeo(Convert.ToDecimal(item["Invoice"]));
+
+                    }
+
+                    HttpClient clienteProd = new HttpClient();
+
+                    var httpContent2Prod = new StringContent(JsonConvert.SerializeObject(NCFac), Encoding.UTF8, "application/json");
+                    clienteProd.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    try
+                    {
+                        HttpResponseMessage response3 = await clienteProd.PostAsync(parametros.UrlPostNCInvoice, httpContent2Prod);
+                        if (response3.IsSuccessStatusCode)
+                        {
+                            response3.Content.Headers.ContentType.MediaType = "application/json";
+                            var res = await response3.Content.ReadAsStringAsync();
+                            BitacoraZoho bitEncabezado = new BitacoraZoho();
+                            bitEncabezado.JsonEnviado = JsonConvert.SerializeObject(NCFac);
+                            bitEncabezado.Fecha = DateTime.Now;
+                            bitEncabezado.DocNum = DocNum;
+                            bitEncabezado.RespuestaZoho = res.ToString();
+                            db.BitacoraZoho.Add(bitEncabezado);
+                            db.SaveChanges();
+
+                            
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        BitacoraErrores be = new BitacoraErrores();
+                        be.DocNum = DocNum;
+                        be.Razon = ex.Message;
+                        be.StackTrace = ex.StackTrace;
+                        be.Fecha = DateTime.Now;
+
+                        db.BitacoraErrores.Add(be);
+                        db.SaveChanges();
+                    }
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                return Request.CreateResponse(HttpStatusCode.OK);
+
+            }
+            catch (Exception ex)
+            {
+                BitacoraErrores be = new BitacoraErrores();
+                be.DocNum = DocNum;
+                be.Razon = ex.Message;
+                be.StackTrace = ex.StackTrace;
+                be.Fecha = DateTime.Now;
+
+                db.BitacoraErrores.Add(be);
+                db.SaveChanges();
+
+
+
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.ToString());
+            }
+
+
+        }
+
 
     }
 }

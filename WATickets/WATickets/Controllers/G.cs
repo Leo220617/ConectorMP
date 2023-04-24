@@ -54,6 +54,17 @@ namespace WATickets.Controllers
             }
         }
 
+        public static decimal Redondeo(decimal valor)
+        {
+            try
+            {
+                return Math.Round(valor, 2);
+            }
+            catch (Exception)
+            {
 
+                return valor;
+            }
+        }
     }
 }

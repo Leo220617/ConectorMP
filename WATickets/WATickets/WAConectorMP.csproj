@@ -260,6 +260,7 @@
     <Compile Include="Models\Datos\EntradaMercancias.cs" />
     <Compile Include="Models\Datos\EntregaBodega.cs" />
     <Compile Include="Models\Datos\FacturaImportacion.cs" />
+    <Compile Include="Models\Datos\NCInvoice.cs" />
     <Compile Include="Models\Datos\OfertaCompra.cs" />
     <Compile Include="Models\Datos\OrdenCompra.cs" />
     <Compile Include="Models\Datos\OrdenVenta.cs" />
