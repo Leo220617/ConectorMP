@@ -53,7 +53,7 @@ namespace WATickets.Controllers
                 pago.IdZohoOdV = Ds.Tables["Encabezado"].Rows[0]["IdZoho"].ToString();
                 pago.DocNum = Ds.Tables["Encabezado"].Rows[0]["DocNum"].ToString();
                 pago.FechaCreacion = Convert.ToDateTime( Ds.Tables["Encabezado"].Rows[0]["Fecha"].ToString());
-                pago.Monto = Convert.ToDecimal( Ds.Tables["Encabezado"].Rows[0]["Total"].ToString());
+                pago.Monto = G.Redondeo(Convert.ToDecimal( Ds.Tables["Encabezado"].Rows[0]["Total"].ToString()));
                 pago.NoPago = Convert.ToInt32(Ds.Tables["Encabezado"].Rows[0]["NoPago"].ToString());
 
                 HttpClient clienteProd = new HttpClient();

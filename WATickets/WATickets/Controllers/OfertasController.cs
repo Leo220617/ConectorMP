@@ -994,7 +994,46 @@ namespace WATickets.Controllers
                             db.BitacoraZoho.Add(bitEncabezado);
                             db.SaveChanges();
 
-                            
+                            try
+                            {
+                                var respZoho = await response3.Content.ReadAsAsync<ZohoApi>();
+
+                                var Cn5 = new SqlConnection(conexion);
+                                var Cmd5 = new SqlCommand();
+
+                                Cn5.Open();
+
+                                Cmd5.Connection = Cn5;
+                                if(factura == 1)
+                                {
+                                    Cmd5.CommandText = "UPDATE OINV set  U_IdZohoDoc = '" + respZoho.data.FirstOrDefault().details.id + "' where DocEntry = '" + DocNum + "'";
+
+                                }
+                                else
+                                {
+                                    Cmd5.CommandText = "UPDATE ORIN set  U_IdZohoDoc = '" + respZoho.data.FirstOrDefault().details.id + "' where DocEntry = '" + DocNum + "'";
+
+                                }
+
+
+                                Cmd5.ExecuteNonQuery();
+                                Cn5.Close();
+                                Cn5.Dispose();
+                                Cn.Close();
+
+                            }
+                            catch (Exception ex3)
+                            {
+
+                                BitacoraErrores be = new BitacoraErrores();
+                                be.DocNum = DocNum;
+                                be.Razon = ex3.Message;
+                                be.StackTrace = ex3.StackTrace;
+                                be.Fecha = DateTime.Now;
+
+                                db.BitacoraErrores.Add(be);
+                                db.SaveChanges();
+                            }
 
                         }
                     }
