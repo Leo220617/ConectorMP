@@ -13,5 +13,7 @@ namespace WATickets.Models.Datos
         public string Comments { get; set; }
         public decimal NC { get; set; }
         public decimal Invoice { get; set; }
+        public decimal Subtotal_NC { get; set; }
+        public decimal Subtotal_Invoice { get; set; }
     }
 }

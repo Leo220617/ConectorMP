@@ -972,6 +972,9 @@ namespace WATickets.Controllers
                         NCFac.Comments = item["Comments"].ToString();
                         NCFac.NC = G.Redondeo(Convert.ToDecimal(item["NC"]));
                         NCFac.Invoice = G.Redondeo(Convert.ToDecimal(item["Invoice"]));
+                        NCFac.Subtotal_NC = G.Redondeo(Convert.ToDecimal(item["Subtotal_NC"]));
+                        NCFac.Subtotal_Invoice = G.Redondeo(Convert.ToDecimal(item["Subtotal_Invoice"]));
+
 
                     }
 

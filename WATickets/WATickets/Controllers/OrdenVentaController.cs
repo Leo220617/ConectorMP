@@ -370,17 +370,20 @@ namespace WATickets.Controllers
                                         if (cerrado == 1)
                                         {
                                             encabezado.TotalFacturado = G.Redondeo(Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["TotalFacturado"]));
-                                            encabezado.FechaCierre = DateTime.Now;
+                                            encabezado.Subtotal_TotalFacturado = G.Redondeo(Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["Subtotal_TotalFacturado"]));
+
+                                            encabezado.FechaCierre = Convert.ToDateTime(Ds2.Tables["Encabezado2"].Rows[0]["FechaCierre"]).Date;
                                         }
                                         else
                                         {
 
-                                            encabezado.FechaCierre = DateTime.Now;
+                                            encabezado.FechaCierre = null;//Convert.ToDateTime(Ds2.Tables["Encabezado2"].Rows[0]["FechaCierre"]).Date;
                                         }
                                     }
                                     catch (Exception ex)
                                     {
-                                        encabezado.FechaCierre = DateTime.Now;
+                                        encabezado.FechaCierre = null;
+
 
 
                                     }
@@ -669,17 +672,20 @@ namespace WATickets.Controllers
                                         if (cerrado == 1)
                                         {
                                             encabezado.TotalFacturado = G.Redondeo(Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["TotalFacturado"]));
-                                            encabezado.FechaCierre = DateTime.Now;
+                                            encabezado.Subtotal_TotalFacturado = G.Redondeo(Convert.ToDecimal(Ds2.Tables["Encabezado2"].Rows[0]["Subtotal_TotalFacturado"]));
+
+                                            encabezado.FechaCierre = Convert.ToDateTime(Ds2.Tables["Encabezado2"].Rows[0]["FechaCierre"]).Date;
                                         }
                                         else
                                         {
 
-                                            encabezado.FechaCierre = DateTime.Now;
+                                            encabezado.FechaCierre = null;//Convert.ToDateTime(Ds2.Tables["Encabezado2"].Rows[0]["FechaCierre"]).Date;
                                         }
                                     }
                                     catch (Exception ex)
                                     {
-                                        encabezado.FechaCierre = DateTime.Now;
+                                        encabezado.FechaCierre = null;
+
 
 
                                     }
