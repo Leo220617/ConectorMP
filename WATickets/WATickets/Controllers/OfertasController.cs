@@ -441,8 +441,11 @@ namespace WATickets.Controllers
                     }
                     catch (Exception ex)
                     {
-
-                        throw new Exception(ex.Message);
+                        //if(!ex.Message.Contains("No se encontro el proyecto"))
+                        //{
+                        //    throw new Exception(ex.Message);
+                        //}
+                       
                     }
 
                     FI.DocEntry = item["DocEntry"].ToString();
@@ -467,11 +470,15 @@ namespace WATickets.Controllers
                         
                     }
 
-
-                    var OrdenID = new Oportunidades_Zoho();
-                    OrdenID.IdZoho = Oportunidad;
-                    OrdenID.Completo = item["Completo"].ToString() == "0" ? false : true;
-                    FI.Oportunidades_Zoho.Add(OrdenID);
+                    if(!string.IsNullOrEmpty(Oportunidad))
+                    {
+                        var OrdenID = new Oportunidades_Zoho();
+                        OrdenID.IdZoho = Oportunidad;
+                        OrdenID.Completo = item["Completo"].ToString() == "0" ? false : true;
+                        FI.Oportunidades_Zoho.Add(OrdenID);
+                    }
+                   
+                    Oportunidad = "";
                 }
 
 
