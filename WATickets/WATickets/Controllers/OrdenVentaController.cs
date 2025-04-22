@@ -290,7 +290,8 @@ namespace WATickets.Controllers
 
                 var DealName = Concatenacion;
 
-
+                Cn.Close();
+                Cn.Dispose();
 
                 try
                 {
@@ -322,7 +323,7 @@ namespace WATickets.Controllers
                                 {
 
 
-                                    Cn.Close();
+                                   
 
 
 
@@ -520,9 +521,10 @@ namespace WATickets.Controllers
                                     }
 
                                     Cn1.Close();
-
+                                    Cn1.Dispose();
 
                                     Cn2.Close();
+                                    Cn2.Dispose();
 
                                     HttpClient cliente2 = new HttpClient();
 
@@ -625,7 +627,7 @@ namespace WATickets.Controllers
                                     Cn4.Close();
                                     Cn4.Dispose();
 
-                                    Cn.Close();
+                                    //Cn.Close();
 
 
 
@@ -821,9 +823,10 @@ namespace WATickets.Controllers
                                     }
 
                                     Cn1.Close();
-
+                                    Cn1.Dispose();
 
                                     Cn2.Close();
+                                    Cn2.Dispose();
 
                                     HttpClient cliente2 = new HttpClient();
 
