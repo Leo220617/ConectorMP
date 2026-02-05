@@ -458,11 +458,24 @@ namespace WATickets.Controllers
                     
                     try
                     {
-                        FI.FechaSalidaEsperada = Convert.ToDateTime(item["FechaSalidaEsperada"].ToString());
-                        FI.FechaArriboEsperada = Convert.ToDateTime(item["FechaArriboEsperada"].ToString());
-                        FI.FechaSalidaReal = Convert.ToDateTime(item["FechaSalidaReal"].ToString());
-                        FI.FechaArriboReal = Convert.ToDateTime(item["FechaArriboReal"].ToString());
+                        //FI.FechaSalidaEsperada = Convert.ToDateTime(item["FechaSalidaEsperada"].ToString());
+                        //FI.FechaArriboEsperada = Convert.ToDateTime(item["FechaArriboEsperada"].ToString());
+                        //FI.FechaSalidaReal = Convert.ToDateTime(item["FechaSalidaReal"].ToString());
+                        //FI.FechaArriboReal = Convert.ToDateTime(item["FechaArriboReal"].ToString());
 
+                        DateTime tempDate;
+
+                        if (DateTime.TryParse(item["FechaSalidaEsperada"]?.ToString(), out tempDate))
+                            FI.FechaSalidaEsperada = tempDate;
+
+                        if (DateTime.TryParse(item["FechaArriboEsperada"]?.ToString(), out tempDate))
+                            FI.FechaArriboEsperada = tempDate;
+
+                        if (DateTime.TryParse(item["FechaSalidaReal"]?.ToString(), out tempDate))
+                            FI.FechaSalidaReal = tempDate;
+
+                        if (DateTime.TryParse(item["FechaArriboReal"]?.ToString(), out tempDate))
+                            FI.FechaArriboReal = tempDate;
                     }
                     catch (Exception)
                     {
@@ -488,8 +501,11 @@ namespace WATickets.Controllers
 
 
                 HttpClient clienteProd = new HttpClient();
-
-                var httpContent2Prod = new StringContent(JsonConvert.SerializeObject(FI), Encoding.UTF8, "application/json");
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                };
+                var httpContent2Prod = new StringContent(JsonConvert.SerializeObject(FI, jsonSettings), Encoding.UTF8, "application/json");
                 clienteProd.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 try
                 {

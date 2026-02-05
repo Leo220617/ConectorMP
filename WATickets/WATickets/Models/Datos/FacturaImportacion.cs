@@ -11,10 +11,10 @@ namespace WATickets.Models.Datos
         public DateTime Fecha { get; set; }
         public string Naviera { get; set; }
         public int DiasTransito { get; set; }
-        public DateTime FechaSalidaEsperada { get; set; }
-        public DateTime FechaArriboEsperada { get; set; }
-        public DateTime FechaSalidaReal { get; set; }
-        public DateTime FechaArriboReal { get; set; }
+        public DateTime? FechaSalidaEsperada { get; set; }
+        public DateTime? FechaArriboEsperada { get; set; }
+        public DateTime? FechaSalidaReal { get; set; }
+        public DateTime? FechaArriboReal { get; set; }
         public List<Oportunidades_Zoho> Oportunidades_Zoho { get; set; }
     }
 
